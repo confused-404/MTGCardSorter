@@ -1,5 +1,6 @@
 import time
 import cv2 as cv
+import numpy as np
 
 def start_camera():
     vid_capture = cv.VideoCapture(0)
@@ -12,7 +13,7 @@ def start_camera():
 
         img_p = "imgs/raw/card" + str(imgs) + ".jpg"
 
-        cv.imwrite(img_p, img=frame)
+        # cv.imwrite(img_p, img=frame)
         
         # get bounding box of image
         
@@ -22,15 +23,17 @@ def start_camera():
         ret, bin_img = cv.threshold(pro_img, 127, 255, 0)
         
         contours, _ = cv.findContours(bin_img, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+        contours = sorted(contours, key=cv.contourArea, reverse=True)
         
-        for i in range(len(contours)):
-            b_x, b_y, b_w, b_h = cv.boundingRect(contours[i])
+        cnt = contours[1]
         
-            # pro_img = cv.drawContours(pro_img, [contours[i]], 0, (0, 255, 255), 2)
-            
-            pro_img = cv.rectangle(pro_img, (b_x, b_y), (b_x+b_w, b_y+b_h), (0, 255, 0), 2)
+        rect = cv.minAreaRect(cnt)
+        bbox = cv.boxPoints(rect)
+        bbox = np.int0(bbox)
         
-        cv.imshow("camera", pro_img)
+        frame = cv.drawContours(frame, [bbox], 0, (0,0,255), 2)
+        
+        cv.imshow("camera", frame)
 
         imgs += 1
 
