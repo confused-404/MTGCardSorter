@@ -5,7 +5,7 @@ import os
 
 def main():
     
-    testing = True
+    testing = False
     
     while (testing):
         test_card = input("Enter card name: ").lower()
@@ -14,6 +14,8 @@ def main():
             scryfall_loader.save_image(test_card, "large")
             
         identifier.getCardName("imgs/raw/" + test_card + ".jpg")
+    
+    camera.start_camera()
     
 if __name__ == '__main__':
     main()
