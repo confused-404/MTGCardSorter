@@ -35,4 +35,4 @@ def get_image(card_name, size):
     return Image.open(response.raw)
 
 def save_image(card_name, size):
-    get_image(card_name, size).save("imgs/" + card_name + ".jpg")
+    get_image(card_name, size).save("imgs/raw/" + card_name + ".jpg")
