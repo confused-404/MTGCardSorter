@@ -14,37 +14,16 @@ def getCardName(img_path):
     
     pytesseract.pytesseract.tesseract_cmd = r'C:/Program Files/Tesseract-OCR/tesseract.exe'
     
-    img = Image.open(img_path)
-    img = img.crop((0, img.height/1.1, img.width / 2, img.height)).convert("L")
-    img = img.resize((img.width * 5, img.height*5), resample=Image.BOX)
-    img = img.filter(ImageFilter.BLUR)
+    raw_img = Image.open(img_path)
+    input_name = img_path.split("/")[-1].split(".")[0]
     
-    if not (os.path.isfile("imgs/cropped/" + img_path.split("/")[-1].split(".")[0] + "_cropped.jpg")):
-            img.save("imgs/cropped/" + img_path.split("/")[-1].split(".")[0] + "_cropped.jpg")
+    setcode_img = raw_img.crop((raw_img.width / 20, raw_img.height/1.05, raw_img.width / 7, raw_img.height / 1.02))
+    setcode_img.save("imgs/cropped/setcode/" + input_name + ".jpg")
     
+    set_code = pytesseract.image_to_string(setcode_img)
     
-    arr = np.array(img)
+    set_code = re.sub(string=set_code, pattern="\W", repl="")
     
-    raw = pytesseract.image_to_string(arr)
-    
-    print("\n\n" + raw + "\n\n")
-    
-    setcode = ""
-    collector = -1
-    
-    try:
-        setcode = re.findall(pattern=setcodepattern, string=raw)[0]
-    except:
-        print("Set Code FAILURE")
-    try:
-        collector = re.findall(pattern=collectorpattern, string=raw)[0]
-        # print("Collector Number: " + collector)
-    except:
-        print("Collector Number FAILURE")
-    
-    if (collector != -1 and setcode != ""):
-        print(setcode + " " + str(collector))
-    else:
-        print(raw)
+    print(set_code)
 
     
